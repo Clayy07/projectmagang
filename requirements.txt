@@ -6,3 +6,4 @@ imbalanced-learn
 textstat
 openpyxl
 joblib
+scikit-learn==1.5.0
