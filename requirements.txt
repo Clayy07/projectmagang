@@ -1,0 +1,8 @@
+pandas
+streamlit
+plotly
+scikit-learn
+imbalanced-learn
+textstat
+openpyxl
+joblib
