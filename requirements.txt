@@ -2,7 +2,7 @@ pandas
 streamlit
 plotly
 scikit-learn
-imbalanced-learn=0.11.0
+imbalanced-learn==0.11.0
 textstat
 openpyxl
 joblib
