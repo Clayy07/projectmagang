@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.express as px
 import joblib
 import json
-
-# Import fungsi dari seo_utils.py
 import seo_utils
 
 # --- Konfigurasi Nama File ---
@@ -117,6 +115,12 @@ def main():
     # --- Visualisasi interaktif ---
     if not df_display_original.empty:
         st.subheader("📈 Visualisasi Distribusi Fitur")
+        st.markdown("""
+        > Visualisasi berikut menggambarkan distribusi dari masing-masing fitur SEO:
+        - **Keyword Density** menunjukkan seberapa sering kata kunci utama muncul dalam artikel.
+        - **Readability Score** mengukur tingkat kemudahan teks dibaca menggunakan metode Flesch Reading Ease.
+        - **Jumlah Heading** menunjukkan banyaknya heading di dalam artikel, yang berkontribusi pada struktur konten.
+        """)
         col1, col2, col3 = st.columns(3)
         with col1:
             fig_density = px.histogram(df_display_original, x='density', nbins=30, title="Keyword Density", color_discrete_sequence=['skyblue'])
@@ -130,9 +134,21 @@ def main():
 
     # --- Evaluasi Model ---
     st.subheader("📉 Evaluasi Model")
+    st.markdown("""
+    > Evaluasi ini menunjukkan performa model Machine Learning setelah dilatih pada data artikel SEO.
+    - Model digunakan untuk mengklasifikasikan apakah sebuah artikel **SEO Friendly** atau tidak.
+    - Akurasi menunjukkan seberapa sering prediksi model benar dibandingkan total data uji.
+    """)
     if metrics:
         st.metric("Akurasi Model", f"{metrics['accuracy']:.2f}")
         st.write("#### 📋 Classification Report")
+        st.markdown("""
+        > **Classification Report** memberikan metrik detail evaluasi model:
+        - **Precision**: Proporsi prediksi benar dari total prediksi untuk suatu label.
+        - **Recall**: Proporsi data yang benar-benar termasuk label tertentu dan berhasil diprediksi dengan benar.
+        - **F1-Score**: Rata-rata harmonis dari precision dan recall — memberikan keseimbangan keduanya.
+        - **Support**: Jumlah sampel data uji untuk setiap kategori.
+        """)
         report_df = pd.DataFrame(metrics['classification_report']).transpose().round(3)
         if 'support' in report_df.columns:
             report_df['support'] = report_df['support'].astype(int)
@@ -140,6 +156,12 @@ def main():
         st.dataframe(report_df, use_container_width=True)
 
         st.write("#### 📊 Confusion Matrix")
+        st.markdown("""
+        > **Confusion Matrix** menunjukkan hasil perbandingan antara label sebenarnya dan hasil prediksi model:
+        - **Aktual: Not SEO** → Artikel yang sebenarnya tidak SEO Friendly.
+        - **Aktual: SEO** → Artikel yang sebenarnya termasuk SEO Friendly.
+        """)
+
         cm_df = pd.DataFrame(metrics['confusion_matrix'],
                              index=['Aktual: Not SEO', 'Aktual: SEO'],
                              columns=['Prediksi: Not SEO', 'Prediksi: SEO'])
@@ -150,6 +172,11 @@ def main():
     # --- Hasil Prediksi pada Data Uji yang Disimpan ---
     if model and not X_test_saved.empty and not y_test_saved.empty:
         st.subheader("📋 Hasil Prediksi pada Data Uji Asli yang Disimpan")
+        st.markdown("""
+        > Tabel berikut menampilkan hasil prediksi model terhadap data uji:
+        - Menunjukkan fitur dari setiap artikel (Density, Readability, Heading), label aktual, dan label hasil prediksi.
+        - Digunakan untuk melihat apakah model mampu mengenali artikel yang benar-benar SEO Friendly dan yang tidak.
+        """)
         y_pred_saved = model.predict(X_test_saved)
         result_df_saved = X_test_saved.copy()
         result_df_saved['Actual Label'] = y_test_saved['label'].values
